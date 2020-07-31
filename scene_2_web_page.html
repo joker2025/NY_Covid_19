@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+<style> .chart rect { fill: steelblue} </style>
+<html>
+
+<body>
+
+
+<table>
+ <tr>
+  <td>
+    <h1>
+	<div id="title_narrative">New York - Covid 2019</div>
+    </td>
+   </h1>
+ </tr>
+ <tr>
+  <td><div id="scene2_title">Scene 2 title here</td>
+ </tr>
+ <tr>
+  <td><div id="scene2_info_top">add information here</td>
+ </tr>
+ <tr>
+    <td><div id="area_chart1_title"><center>Hospitalized Count</center></div></td>
+    <td><div id="area_chart2_title"><center>Hospitalized Rate</center></div></td>
+ </tr>
+  <tr>
+    <td><div id="area_chart1"></div></td>
+    <td><div id="area_chart2"></div></td>
+ </tr>
+ <tr>
+    <td><div id="area_chart1_title"><center>Case Rate</center></div></td>
+    <td><div id="area_chart2_title"><center>Deadth Rate</center></div></td>
+ </tr>
+  <tr>
+    <td><div id="area_chart3"></div></td>
+    <td><div id="area_chart4"></div></td>
+ </tr>
+ <tr>
+  <td><div id="scene2_info_bottom">add information here</td>
+ </tr>
+ <tr>
+  <td>
+   <div id="scene2_next_page">
+	<button onclick="window.location.href='C:/Users/josephangulo/Desktop/MS/Final_Project/datafiles/scene_3_web_page.html';">
+      Next Page
+    </button>
+   </div>
+   </td>
+ </tr>
+</table>
+
+<script>
+
+// Set the dimensions of the canvas / graph
+var	margin = {top: 30, right: 20, bottom: 30, left: 50};
+var	width = 600 - margin.left - margin.right;
+var	height = 320 - margin.top - margin.bottom;
+
+//***********************************************************
+// Chart #1
+//***********************************************************
+
+//add SVG for chart #1
+var svg_chart1 = d3.select("#area_chart1")
+ .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom);
+
+
+
+//range = output for scales X and Y
+//padding to allow space between bars
+//scaleBand() in X because values are discrete
+var xScale_chart1 = d3.scaleBand().range([0,width]).padding(0.4);
+var yScale_chart1 = d3.scaleLinear().range([height,0]);
+
+
+//add HTML group to include the axes and bar chart
+var group_g = svg_chart1
+		 .append("g")
+		 .attr("transform", "translate(" + margin.left + "," + margin.top + ")"); 
+
+
+
+//bring CSV data
+const data = d3.csv('https://raw.githubusercontent.com/joker2025/narrative_visualization/master/scene2_dataset.csv',function(error,data){
+if(error) throw error;
+
+//domain for X and Y
+xScale_chart1.domain(data.map(function(d){ return d.BOROUGH_GROUP;}));
+yScale_chart1.domain([0,d3.max(data,function(d){ return parseInt(d.HOSPITALIZED_COUNT);})]);
+
+
+//add axis X to HTML group
+group_g.append("g")
+ .attr("transform","translate(0," + height + ")")
+ .call(d3.axisBottom(xScale_chart1));
+
+//add axis Y to HTML group
+group_g.append("g")
+  .call(d3.axisLeft(yScale_chart1).tickFormat(function(d){return d;})
+  .ticks(10));
+
+//draw bars
+group_g.selectAll(".bar")
+   .data(data)
+   .enter()
+   .append("rect")
+   .attr("class", "bar")
+   .attr("x", function(d) { return xScale_chart1(d.BOROUGH_GROUP); })
+   .attr("y", function(d) { return yScale_chart1(d.HOSPITALIZED_COUNT); })
+   .attr("width", xScale_chart1.bandwidth())
+   .attr("height", function(d) { return height - yScale_chart1(d.HOSPITALIZED_COUNT); });
+
+});
+
+//***********************************************************
+// Chart #2
+//***********************************************************
+
+//add SVG for chart #2
+var svg_chart2 = d3.select("#area_chart2")
+ .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom);
+
+
+
+
+//range = output for scales X and Y
+//padding to allow space between bars
+//scaleBand() in X because values are discrete
+var xScale_chart2 = d3.scaleBand().range([0,width]).padding(0.4);
+var yScale_chart2 = d3.scaleLinear().range([height,0]);
+
+
+//add HTML group to include the axes and bar chart
+var group_g_chart2 = svg_chart2
+		 .append("g")
+		 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+//bring CSV data
+
+const data_chart2 = d3.csv('https://raw.githubusercontent.com/joker2025/narrative_visualization/master/scene2_dataset.csv',function(error,data){
+if(error) throw error;
+
+
+xScale_chart2.domain(data.map(function(d){ return d.BOROUGH_GROUP;}));
+yScale_chart2.domain([0,d3.max(data,function(d){ return parseInt(d.HOSPITALIZED_RATE);})]);
+
+
+//add axis X to HTML group
+group_g_chart2.append("g")
+ .attr("transform","translate(0," + height + ")")
+ .call(d3.axisBottom(xScale_chart2));
+
+//add axis Y to HTML group
+group_g_chart2.append("g")
+  .call(d3.axisLeft(yScale_chart2).tickFormat(function(d){return d;})
+  .ticks(10));
+
+//draw bars
+group_g_chart2.selectAll(".bar")
+   .data(data)
+   .enter()
+   .append("rect")
+   .attr("class", "bar")
+   .attr("x", function(d) { return xScale_chart2(d.BOROUGH_GROUP); })
+   .attr("y", function(d) { return yScale_chart2(d.HOSPITALIZED_RATE); })
+   .attr("width", xScale_chart2.bandwidth())
+   .attr("height", function(d) { return height - yScale_chart2(d.HOSPITALIZED_RATE); });
+
+});
+
+//***********************************************************
+// Chart #3
+//***********************************************************
+
+//add SVG for chart #3
+var svg_chart3 = d3.select("#area_chart3")
+ .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom);
+
+
+//range = output for scales X and Y
+//padding to allow space between bars
+//scaleBand() in X because values are discrete
+var xScale_chart3 = d3.scaleBand().range([0,width]).padding(0.4);
+var yScale_chart3 = d3.scaleLinear().range([height,0]);
+
+//add HTML group to include the axes and bar chart
+var group_g_chart3 = svg_chart3
+		 .append("g")
+		 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+
+//bring CSV data
+
+const data_chart3 = d3.csv('https://raw.githubusercontent.com/joker2025/narrative_visualization/master/scene2_dataset.csv',function(error,data){
+if(error) throw error;
+xScale_chart3.domain(data.map(function(d){ return d.BOROUGH_GROUP;}));
+yScale_chart3.domain([0,d3.max(data,function(d){ return parseInt(d.CASE_RATE);})]);
+
+
+
+
+//add axis X to HTML group
+group_g_chart3.append("g")
+ .attr("transform","translate(0," + height + ")")
+ .call(d3.axisBottom(xScale_chart3));
+
+//add axis Y to HTML group
+group_g_chart3.append("g")
+  .call(d3.axisLeft(yScale_chart3).tickFormat(function(d){return d;})
+  .ticks(10));
+
+
+//draw bars
+group_g_chart3.selectAll(".bar")
+   .data(data)
+   .enter()
+   .append("rect")
+   .attr("class", "bar")
+   .attr("x", function(d) { return xScale_chart3(d.BOROUGH_GROUP); })
+   .attr("y", function(d) { return yScale_chart3(d.CASE_RATE); })
+   .attr("width", xScale_chart3.bandwidth())
+   .attr("height", function(d) { return height - yScale_chart3(d.CASE_RATE); });
+
+});
+
+
+//***********************************************************
+// Chart #4
+//***********************************************************
+
+//add SVG for chart #4
+var svg_chart4 = d3.select("#area_chart4")
+ .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom);
+
+
+
+//range = output for scales X and Y
+//padding to allow space between bars
+//scaleBand() in X because values are discrete
+var xScale_chart4 = d3.scaleBand().range([0,width]).padding(0.4);
+var yScale_chart4 = d3.scaleLinear().range([height,0]);
+
+//add HTML group to include the axes and bar chart
+var group_g_chart4 = svg_chart4
+		 .append("g")
+		 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+//bring CSV data
+
+const data_chart4 = d3.csv('https://raw.githubusercontent.com/joker2025/narrative_visualization/master/scene2_dataset.csv',function(error,data){
+if(error) throw error;
+xScale_chart4.domain(data.map(function(d){ return d.BOROUGH_GROUP;}));
+yScale_chart4.domain([0,d3.max(data,function(d){ return parseInt(d.DEATH_RATE);})]);
+
+
+
+
+//add axis X to HTML group
+group_g_chart4.append("g")
+ .attr("transform","translate(0," + height + ")")
+ .call(d3.axisBottom(xScale_chart4));
+
+
+//add axis Y to HTML group
+group_g_chart4.append("g")
+  .call(d3.axisLeft(yScale_chart4).tickFormat(function(d){return d;})
+  .ticks(10));
+
+//draw bars
+group_g_chart4.selectAll(".bar")
+   .data(data)
+   .enter()
+   .append("rect")
+   .attr("class", "bar")
+   .attr("x", function(d) { return xScale_chart4(d.BOROUGH_GROUP); })
+   .attr("y", function(d) { return yScale_chart4(d.DEATH_RATE); })
+   .attr("width", xScale_chart4.bandwidth())
+   .attr("height", function(d) { return height - yScale_chart4(d.DEATH_RATE); });
+
+});
+
+</script>
+
+</body>
+</html>
