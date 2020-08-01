@@ -2,16 +2,13 @@
 <head>
 <meta charset="utf-8">
 <title>New York - Covid 2019</title>
-<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
-
-
-<link rel="stylesheet" type="text/css" href="styles.css">
+<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
 
 <style></style>
 </head>
 <body>
 
-<table style="width:70%">
+<table >
  <tr>
   <td>
     <h1>
@@ -21,34 +18,47 @@
  </tr>
  <tr>
    <td>
-    <h2>
+    <h3>
         <div id="scene1_title">Was New York able to flatten the curve?</div>
-    </h2>
+    </h3>
    </td>
  </tr>
  <tr>
   <td>
    <div id="scene1_info_top">
-  <p>Next chart displays 3 key metrics where we can see how New York was able to switch from being the epicenter of the pandemic to be a city with the lowest rates in the country.</p>
-  <p>Start of the outbreak in New York = Febriary 29, 2020 according to NYC Health Department.</p>
+  <p>Next chart displays 3 key metrics where we can see hif New York was able to switch from being the epicenter of the pandemic to be a city with the lowest rates in the country.</p>
+  <p>Start of the outbreak in New York = February 29, 2020 according to NYC Health Department.</p>
   <p>Data displayed is from March to July - 2020</p>
   </div>
   </td>
  </tr>
  
  <tr>
-    <td><div id="area_chart1_title">chart 1 title</div></td>
+    <td><div id="area_chart1_title"></div></td>
  </tr>
   <tr>
-    <td><div id="container" class="svg-container"></div></td>
+    <td><div id="display_chart_1"></div></td>
  </tr>
  <tr>
-  <td><div id="scene1_info_bottom">add information here</div></td>
+  <td><div id="scene1_info_bottom_1"><b>Case Count --></b>  Count of patients tested who were confirmed to be COVID-19</div></td>
+ </tr>
+ <tr>
+  <td><div id="scene1_info_bottom_2"><b>Hospitalized Count --></b>  Count of COVID-19 patients who were hospitalized</div></td>
+ </tr>
+ <tr>
+  <td><div id="scene1_info_bottom_3"><b>Deadth Count --></b>  Count of deaths occurring among confirmed COVID-19 cases</div></td>
+ </tr>
+<tr>
+  <td>
+ <br>  
+ <div id="scene1_source">Source = <a href="https://data.cityofnewyork.us/Health/COVID-19-Daily-Counts-of-Cases-Hospitalizations-an/rc75-m7u3" target="_blank">NYC Open Data</a></div>
+ </br>  
+</td>
  </tr>
  <tr>
   <td>
    <div id="scene1_next_page">
-	<button onclick="window.location.href='https://joker2025.github.io/NY_Covid_2020/scene_2_web_page.html';">
+	<button onclick="window.location.href='C:/Users/josephangulo/Desktop/MS/Final_Project/datafiles/scene_2_web_page.html';">
       Next Page
     </button>
    </div>
@@ -58,119 +68,95 @@
 
 
 <script>
-//*******************
-//setup svg
-//*******************
-const width = 300;
-const height = 100;
-const margin = 5;
-const padding = 5;
-const adj = 30;
+// set the dimensions and margins of the graph
+var margin = {top: 10, right: 30, bottom: 30, left: 60};
+var width = 1000 - margin.left - margin.right;
+var height = 400 - margin.top - margin.bottom;
 
+// append the svg object to the body of the page
+var svg = d3.select("#display_chart_1")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
 
-//svg parameters
-const svg = d3.select("div#container").append("svg")
-    .attr("viewBox", "-"
-         + adj + " -"
-          + adj + " "
-         + (width + adj *3) + " "
-        + (height + adj*3))
-    .style("padding", padding)
-    .style("margin", margin)
-    .classed("svg-content", true);
+//Read the data
+const data = d3.csv("https://raw.githubusercontent.com/joker2025/narrative_visualization/master/scene1_dataset.csv",
 
-//*******************
-//pull csv data
-//*******************
-const timeConv = d3.timeParse("%d-%b-%Y");
-const dataset = d3.csv('https://raw.githubusercontent.com/joker2025/narrative_visualization/master/scene1_dataset.csv');
+//format data
+function(d){
+    return { date : d3.timeParse("%d-%b-%Y")(d.date), CASE_COUNT : +d.CASE_COUNT , HOSPITALIZED_COUNT : +d.HOSPITALIZED_COUNT , DEATH_COUNT: +d.DEATH_COUNT }
+},
 
-		    
-dataset.then(function(data) {
-    const slices = data.columns.slice(1).map(function(id) {
-        return {
-            id: id,
-            values: data.map(function(d){
-                return {
-                    date: timeConv(d.date),
-                    measurement: +d[id]
-                };
-            })
-        };
-    });
+function(data) {
 
+//setup X Scale
+var xScale = d3.scaleTime()
+      .domain(d3.extent(data, function(d) { return d.date; }))
+      .range([ 0, width ]);
 
-//set up axis X Y
-
-const xScale = d3.scaleTime().range([0,width]);
-const yScale = d3.scaleLinear().rangeRound([height, 0]);
-
-xScale.domain(d3.extent(data, function(d){
-    return timeConv(d.date)}));
-
-yScale.domain([(0), d3.max(slices, function(c) {
-    return d3.max(c.values, function(d) {
-        return d.measurement + 4; });
-        })
-    ]);
-
-const yaxis = d3.axisLeft()
-    .ticks(6)
-    .scale(yScale);
-
-const xaxis = d3.axisBottom()
+//setup X Axis
+var xAxis = d3.axisBottom(xScale)
     .ticks(20)
     .tickFormat(d3.timeFormat('%b %d'))
     .scale(xScale);
 
-//*******************
-//setup d3 line
-//*******************
-const line = d3.line()
-    .x(function(d) { return xScale(d.date); })
-    .y(function(d) { return yScale(d.measurement); });
-
-let id = 0;
-const ids = function () {
-    return "line-"+id++;
-}
-
-//*******************
-//draw axes X Y
-//*******************
+//draw X axis
 svg.append("g")
-    .attr("class", "axis")
     .attr("transform", "translate(0," + height + ")")
-    .call(xaxis);
+    .call(xAxis);
 
+
+//setup Y Scale
+var yScale = d3.scaleLinear()
+    .domain([0, d3.max(data, function(d) { return Math.max(d.CASE_COUNT, d.HOSPITALIZED_COUNT,d.DEATH_COUNT); })])
+    .range([ height, 0 ]);
+
+//setup Y axis
+var yAxis = d3.axisLeft(yScale);
+
+//draw Y axis
 svg.append("g")
-    .attr("class", "axis")
-    .call(yaxis);
+     .call(yAxis);
 
+//*******************************
+//draw the lines
+//*******************************
 
-//*******************
-//draw 3 lines
-//*******************
-const lines = svg.selectAll("lines")
-    .data(slices)
-    .enter()
-    .append("g");
+//line for CASE_COUNT
+svg.append("path")
+    .datum(data)
+    .attr("fill", "none")
+    .attr("stroke", "#663300")
+    .attr("stroke-width", 1.5)
+    .attr("d", d3.line()
+      .x(function(d) { return xScale(d.date) })
+      .y(function(d) { return yScale(d.CASE_COUNT) })      
+)
 
-    lines.append("path")
-    .attr("class",ids)
-    .attr("d", function(d) { return line(d.values); });
+//line for HOSPITALIZED_COUNT
+svg.append("path")
+    .datum(data)
+    .attr("fill", "none")
+    .attr("stroke", "#808080")
+    .attr("stroke-width", 1.5)
+    .attr("d", d3.line()
+      .x(function(d) { return xScale(d.date) })
+      .y(function(d) { return yScale(d.HOSPITALIZED_COUNT) })
+)
 
-//***********************************
-//draw series for axe Y, required?
-//***********************************
-d3.select("svg")
-  .append('text')
-  .attr("transform", "rotate(-90)")
-  .attr('x', -60)
-  .attr('y', -23)
-  .attr('stroke', 'black')
-  .style("font-size", 8)
-  .text("Count")
+//line for DEATH_COUNT
+svg.append("path")
+    .datum(data)
+    .attr("fill", "none")
+    .attr("stroke", "#ff5050")
+    .attr("stroke-width", 1.5)
+    .attr("d", d3.line()
+      .x(function(d) { return xScale(d.date) })
+      .y(function(d) { return yScale(d.DEATH_COUNT) })
+)
 
 //**********************
 //draw legend for lines
@@ -179,72 +165,67 @@ d3.select("svg")
 //legend for Case Count
 d3.select("svg")
  .append("text")
- .attr("x", 320)
+ .attr("x", 880)
  .attr("y", 30)
- .attr('stroke', 'black')
- .style("font-size", 4)
- .style("font-family","Consolas")
- .style("letter-spacing",1)
+ .style("font-size", 14)
+ .style("font-family","Arial")
  .style("font-weight",2)
  .text("Case Count");
 
 d3.select("svg")
  .append("rect")
- .attr("width", 10)
- .attr("height", 6)
+ .attr("width", 15)
+ .attr("height", 8)
  .attr("fill","#663300")
- .attr("x",300)
- .attr("y",26);
+ .attr("x",860)
+ .attr("y",22);
+
 
 //legend for Hospitalized count
 d3.select("svg")
  .append("text")
- .attr("x", 320)
- .attr("y", 40)
- .attr('stroke', 'black')
- .style("font-size", 4)
- .style("font-family","Consolas")
- .style("letter-spacing",1)
+ .attr("x", 880)
+ .attr("y", 50)
+ .style("font-size", 14)
+ .style("font-family","Arial")
  .style("font-weight",2)
  .text("Hospitalized Count");
 
 d3.select("svg")
  .append("rect")
- .attr("width", 10)
- .attr("height", 6)
+ .attr("width", 15)
+ .attr("height", 8)
  .attr("fill","#808080")
- .attr("x",300)
- .attr("y",36);
+ .attr("x",860)
+ .attr("y",42);
+
 
 //legend for Death count
 d3.select("svg")
  .append("text")
- .attr("x", 320)
- .attr("y", 50)
- .attr('stroke', 'black')
- .style("font-size", 4)
- .style("font-family","Consolas")
- .style("letter-spacing",1)
+ .attr("x", 880)
+ .attr("y", 70)
+ .style("font-size", 14)
+ .style("font-family","Arial")
  .style("font-weight",2)
  .text("Death Count");
 
 d3.select("svg")
  .append("rect")
- .attr("width", 10)
- .attr("height", 6)
- .attr("fill","#ff0000")
- .attr("x",300)
- .attr("y",46);
-
+ .attr("width", 15)
+ .attr("height", 8)
+ .attr("fill","#ff5050")
+ .attr("x",860)
+ .attr("y",62);
 
 //**********************
-//draw annotation
+//draw annotation 1
 //**********************
 d3.select("svg")
  .append("circle")
- .attr("cx",78)
- .attr("cy",3)
- .attr("r",10)
+ .attr("cx",295)
+ .attr("cy",25)
+ .attr("r",25)
  .attr("stroke","green")
  .attr("stroke-dasharray","2")
  .attr("fill","none");
@@ -252,26 +233,58 @@ d3.select("svg")
 //add text
 d3.select("svg")
  .append("text")
- .attr("x", 105)
- .attr("y", 6)
+ .attr("x", 360)
+ .attr("y", 25)
  .attr('stroke', 'black')
- .style("font-size", 10)
+ .style("font-size", 16)
  .style("font-family","Consolas")
  .style("letter-spacing",2)
  .style("font-weight",2)
- .text("6378 cases by Apr 06");
+ .text("6378 cases confirmed on Apr 06");
 
 
 //add line
 d3.select("svg")
  .append("line")
- .attr('x1', 88)
- .attr('y1', 3)
- .attr('x2', 101)
- .attr('y2', 3)
+ .attr('x1', 320)
+ .attr('y1', 22)
+ .attr('x2', 355)
+ .attr('y2', 22)
  .attr('stroke', 'green')
 
-});
+//**********************
+//draw annotation 2
+//**********************
+d3.select("svg")
+ .append("circle")
+ .attr("cx",915)
+ .attr("cy",333)
+ .attr("r",25)
+ .attr("stroke","green")
+ .attr("stroke-dasharray","2")
+ .attr("fill","none");
 
+//add text
+d3.select("svg")
+ .append("text")
+ .attr("x", 690)
+ .attr("y", 265)
+ .attr('stroke', 'black')
+ .style("font-size", 16)
+ .style("font-family","Consolas")
+ .style("letter-spacing",2)
+ .style("font-weight",2)
+ .text("359 cases confirmed on Jul 13");
+
+//add line
+d3.select("svg")
+ .append("line")
+ .attr('x1', 915)
+ .attr('y1', 275)
+ .attr('x2', 915)
+ .attr('y2', 310)
+ .attr('stroke', 'green')
+
+})
 </script>
 </body>
