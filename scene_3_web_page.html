@@ -2,16 +2,20 @@
 <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
 <html>
 
-<body onload='drawChart1()'>
+<body onload='drawChart3()'>
 
 
 <table>
  <tr>
   <td>
     <h1>
-	<div id="title_narrative">New York - Covid 2019</div>
+	<div id="title_narrative">New York - Covid 19</div>
     </td>
    </h1>
+ </tr>
+  <tr>
+  <td>by Joseph Angulo - August 1,2020 </td>
+  </td>
  </tr>
  <tr>
   <td><h2><div id="scene3_title">Let's break the data by some dimensions:</div></h2></td>
@@ -30,17 +34,21 @@
  </tr>
  <tr>
   <td>
-     <button value = "by Sex" type = "button" onclick = "bringContent('area_chart1')"> by Sex </button>
+     <button value = "by Age" type = "button" onclick = "bringContent('area_chart1')"> by Age </button>
      <button value = "by Race" type = "button" onclick = "bringContent('area_chart2')"> by Race </button>
-     <button value = "by Age" type = "button" onclick = "bringContent('area_chart3')"> by Age </button>
+     <button value = "by Sex" type = "button" onclick = "bringContent('area_chart3')"> by Sex </button>
      <button value = "by Poverty" type = "button" onclick = "bringContent('area_chart4')"> by Poverty </button>
   </td>
  </tr>
  <tr>
     <td><br><br><center><b><div id="area_chart1_title">chart 1 title</div></b></center></br></br></td>
+    <td><br><br><center><b><div id="area_chart2_title">chart 2 title</div></b></center></br></br></td>
+    <td><br><br><center><b><div id="area_chart3_title">chart 3 title</div></b></center></br></br></td>
  </tr>
   <tr>
     <td><div id="area_chart1"></div></td>
+    <td><div id="area_chart2"></div></td>
+    <td><div id="area_chart3"></div></td>
  </tr>
 
 <tr>
@@ -52,11 +60,14 @@
  </tr>
  <tr>
   <td>
-   <div id="scene3_next_page">
+
+<button onclick="window.location.href='https://joker2025.github.io/NY_Covid_2020/scene_2_web_page.html';">
+      Previous Page
+    </button>
 	<button onclick="window.location.href='https://joker2025.github.io/NY_Covid_2020/index.html';">
       Home Page
     </button>
-   </div>
+
    </td>
  </tr>
 </table>
@@ -67,16 +78,26 @@ function bringContent(elementID) {
 
 //clear content of the DIV
 document.getElementById("area_chart1").innerHTML = ""; 
+document.getElementById("area_chart2").innerHTML = ""; 
+document.getElementById("area_chart3").innerHTML = ""; 
+document.getElementById("area_chart1_title").innerHTML = "";
+document.getElementById("area_chart2_title").innerHTML = "";
+document.getElementById("area_chart3_title").innerHTML = "";
 
 //bring corresponding chart based on the button
 if (elementID === "area_chart1"){
- drawChart1();
+//by Age
+  drawChart3();
+
 }else if (elementID === "area_chart2"){
+//by Race
   drawChart2();  
 }else if (elementID === "area_chart3"){
-  drawChart3();
+//by Sex
+ drawChart1();
 }
 else{
+//by Poverty
   drawChart4();
 }
 }; 
@@ -94,16 +115,30 @@ function drawChart1(){
 
 //set title of the chart #1
 document.getElementById("area_chart1_title").innerHTML = "Case count by Sex"; 
+document.getElementById("area_chart2_title").innerHTML = "Hospitalized count by Sex"; 
+document.getElementById("area_chart3_title").innerHTML = "Death count by Sex"; 
 
 
-//add SVG for chart #1
+//add SVG for chart #1 - Case Count
 var svg_chart1 = d3.select("#area_chart1")
  .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom);
 
+//add SVG for chart #1 - Hospitalized Count
+var svg_chart1_HC = d3.select("#area_chart2")
+ .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom);
+
+//add SVG for chart #1 - Death Count
+var svg_chart1_DC = d3.select("#area_chart3")
+ .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom);
 
 
+// scales for Case Count
 //range = output for scales X and Y
 //padding to allow space between bars
 //scaleBand() in X because values are discrete
@@ -111,17 +146,45 @@ var xScale_chart1 = d3.scaleBand().range([0,width]).padding(0.4);
 var yScale_chart1 = d3.scaleLinear().range([height,0]);
 
 
+// scales for Hospitalized Count
+//range = output for scales X and Y
+//padding to allow space between bars
+//scaleBand() in X because values are discrete
+var xScale_chart1_HC = d3.scaleBand().range([0,width]).padding(0.4);
+var yScale_chart1_HC = d3.scaleLinear().range([height,0]);
+
+// scales for Death Count
+//range = output for scales X and Y
+//padding to allow space between bars
+//scaleBand() in X because values are discrete
+var xScale_chart1_DC = d3.scaleBand().range([0,width]).padding(0.4);
+var yScale_chart1_DC = d3.scaleLinear().range([height,0]);
+
+
+// Case Count
 //add HTML group to include the axes and bar chart
 var group_g = svg_chart1
 		 .append("g")
 		 .attr("transform", "translate(" + margin.left + "," + margin.top + ")"); 
 
+// Hospitalized Count
+//add HTML group to include the axes and bar chart
+var group_g_HC = svg_chart1_HC
+		 .append("g")
+		 .attr("transform", "translate(" + margin.left + "," + margin.top + ")"); 
+
+// Death Count
+//add HTML group to include the axes and bar chart
+var group_g_DC = svg_chart1_DC
+		 .append("g")
+		 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
 //bring CSV data
 const data = d3.csv('https://raw.githubusercontent.com/joker2025/narrative_visualization/master/scene3_by_sex.csv',function(error,data){
 if(error) throw error;
 
+///////// CASE COUNT
 //domain for X and Y
 xScale_chart1.domain(data.map(function(d){ return d.SEX_GROUP;}));
 yScale_chart1.domain([104000,d3.max(data,function(d){ return parseInt(d.CASE_COUNT);})]);
@@ -143,11 +206,68 @@ group_g.selectAll(".bar")
    .enter()
    .append("rect")
    .attr("class", "bar")
-   .attr("fill","#80b3ff")
+   .attr("fill","#663300")
    .attr("x", function(d) { return xScale_chart1(d.SEX_GROUP); })
    .attr("y", function(d) { return yScale_chart1(d.CASE_COUNT); })
    .attr("width", xScale_chart1.bandwidth())
    .attr("height", function(d) { return height - yScale_chart1(d.CASE_COUNT); });
+
+
+///////// HOSPITALIZED COUNT
+//domain for X and Y
+xScale_chart1_HC.domain(data.map(function(d){ return d.SEX_GROUP;}));
+yScale_chart1_HC.domain([20000,d3.max(data,function(d){ return parseInt(d.HOSPITALIZED_COUNT);})]);
+
+
+//add axis X to HTML group
+group_g_HC.append("g")
+ .attr("transform","translate(0," + height + ")")
+ .call(d3.axisBottom(xScale_chart1_HC));
+
+//add axis Y to HTML group
+group_g_HC.append("g")
+  .call(d3.axisLeft(yScale_chart1_HC).tickFormat(function(d){return d;})
+  .ticks(10));
+
+//draw bars
+group_g_HC.selectAll(".bar")
+   .data(data)
+   .enter()
+   .append("rect")
+   .attr("class", "bar")
+   .attr("fill","#808080")
+   .attr("x", function(d) { return xScale_chart1_HC(d.SEX_GROUP); })
+   .attr("y", function(d) { return yScale_chart1_HC(d.HOSPITALIZED_COUNT); })
+   .attr("width", xScale_chart1_HC.bandwidth())
+   .attr("height", function(d) { return height - yScale_chart1_HC(d.HOSPITALIZED_COUNT); });
+
+///////// DEATH COUNT
+//domain for X and Y
+xScale_chart1_DC.domain(data.map(function(d){ return d.SEX_GROUP;}));
+yScale_chart1_DC.domain([6000,d3.max(data,function(d){ return parseInt(d.DEATH_COUNT);})]);
+
+
+//add axis X to HTML group
+group_g_DC.append("g")
+ .attr("transform","translate(0," + height + ")")
+ .call(d3.axisBottom(xScale_chart1_DC));
+
+//add axis Y to HTML group
+group_g_DC.append("g")
+  .call(d3.axisLeft(yScale_chart1_DC).tickFormat(function(d){return d;})
+  .ticks(10));
+
+//draw bars
+group_g_DC.selectAll(".bar")
+   .data(data)
+   .enter()
+   .append("rect")
+   .attr("class", "bar")
+   .attr("fill","#ff5050")
+   .attr("x", function(d) { return xScale_chart1_DC(d.SEX_GROUP); })
+   .attr("y", function(d) { return yScale_chart1_DC(d.DEATH_COUNT); })
+   .attr("width", xScale_chart1_DC.bandwidth())
+   .attr("height", function(d) { return height - yScale_chart1_DC(d.DEATH_COUNT); });
 
 });
 
@@ -161,17 +281,30 @@ function drawChart2(){
 
 //set title of the chart #2
 document.getElementById("area_chart1_title").innerHTML = "Case count by Race"; 
+document.getElementById("area_chart2_title").innerHTML = "Hospitalized count by Race"; 
+document.getElementById("area_chart3_title").innerHTML = "Death count by Race"; 
 
 
-//add SVG for chart #2
+//add SVG for chart #2 - Case Count
 var svg_chart2 = d3.select("#area_chart1")
  .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom);
 
 
+//add SVG for chart #1 - Hospitalized Count
+var svg_chart2_HC = d3.select("#area_chart2")
+ .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom);
 
+//add SVG for chart #1 - Death Count
+var svg_chart2_DC = d3.select("#area_chart3")
+ .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom);
 
+// scales for Case Count
 //range = output for scales X and Y
 //padding to allow space between bars
 //scaleBand() in X because values are discrete
@@ -179,8 +312,35 @@ var xScale_chart2 = d3.scaleBand().range([0,width]).padding(0.4);
 var yScale_chart2 = d3.scaleLinear().range([height,0]);
 
 
+// scales for Hospitalized Count
+//range = output for scales X and Y
+//padding to allow space between bars
+//scaleBand() in X because values are discrete
+var xScale_chart2_HC = d3.scaleBand().range([0,width]).padding(0.4);
+var yScale_chart2_HC = d3.scaleLinear().range([height,0]);
+
+// scales for Death Count
+//range = output for scales X and Y
+//padding to allow space between bars
+//scaleBand() in X because values are discrete
+var xScale_chart2_DC = d3.scaleBand().range([0,width]).padding(0.4);
+var yScale_chart2_DC = d3.scaleLinear().range([height,0]);
+
+// Case Count
 //add HTML group to include the axes and bar chart
 var group_g_chart2 = svg_chart2
+		 .append("g")
+		 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// Hospitalized Count
+//add HTML group to include the axes and bar chart
+var group_g_HC = svg_chart2_HC
+		 .append("g")
+		 .attr("transform", "translate(" + margin.left + "," + margin.top + ")"); 
+
+// Death Count
+//add HTML group to include the axes and bar chart
+var group_g_DC = svg_chart2_DC
 		 .append("g")
 		 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -190,7 +350,7 @@ var group_g_chart2 = svg_chart2
 const data_chart2 = d3.csv('https://raw.githubusercontent.com/joker2025/narrative_visualization/master/scene3_by_race.csv',function(error,data){
 if(error) throw error;
 
-
+///////// CASE COUNT
 xScale_chart2.domain(data.map(function(d){ return d.RACE_GROUP;}));
 yScale_chart2.domain([0,d3.max(data,function(d){ return parseInt(d.CASE_COUNT);})]);
 
@@ -211,11 +371,69 @@ group_g_chart2.selectAll(".bar")
    .enter()
    .append("rect")
    .attr("class", "bar")
-   .attr("fill","#8cd98c")
+   .attr("fill","#663300")
    .attr("x", function(d) { return xScale_chart2(d.RACE_GROUP); })
    .attr("y", function(d) { return yScale_chart2(d.CASE_COUNT); })
    .attr("width", xScale_chart2.bandwidth())
    .attr("height", function(d) { return height - yScale_chart2(d.CASE_COUNT); });
+
+
+///////// HOSPITALIZED COUNT
+//domain for X and Y
+xScale_chart2_HC.domain(data.map(function(d){ return d.RACE_GROUP;}));
+yScale_chart2_HC.domain([2000,d3.max(data,function(d){ return parseInt(d.HOSPITALIZED_COUNT);})]);
+
+
+//add axis X to HTML group
+group_g_HC.append("g")
+ .attr("transform","translate(0," + height + ")")
+ .call(d3.axisBottom(xScale_chart2_HC));
+
+//add axis Y to HTML group
+group_g_HC.append("g")
+  .call(d3.axisLeft(yScale_chart2_HC).tickFormat(function(d){return d;})
+  .ticks(10));
+
+//draw bars
+group_g_HC.selectAll(".bar")
+   .data(data)
+   .enter()
+   .append("rect")
+   .attr("class", "bar")
+   .attr("fill","#808080")
+   .attr("x", function(d) { return xScale_chart2_HC(d.RACE_GROUP); })
+   .attr("y", function(d) { return yScale_chart2_HC(d.HOSPITALIZED_COUNT); })
+   .attr("width", xScale_chart2_HC.bandwidth())
+   .attr("height", function(d) { return height - yScale_chart2_HC(d.HOSPITALIZED_COUNT); });
+
+///////// DEATH COUNT
+//domain for X and Y
+xScale_chart2_DC.domain(data.map(function(d){ return d.RACE_GROUP;}));
+yScale_chart2_DC.domain([500,d3.max(data,function(d){ return parseInt(d.DEATH_COUNT);})]);
+
+
+//add axis X to HTML group
+group_g_DC.append("g")
+ .attr("transform","translate(0," + height + ")")
+ .call(d3.axisBottom(xScale_chart2_DC));
+
+//add axis Y to HTML group
+group_g_DC.append("g")
+  .call(d3.axisLeft(yScale_chart2_DC).tickFormat(function(d){return d;})
+  .ticks(10));
+
+//draw bars
+group_g_DC.selectAll(".bar")
+   .data(data)
+   .enter()
+   .append("rect")
+   .attr("class", "bar")
+   .attr("fill","#ff5050")
+   .attr("x", function(d) { return xScale_chart2_DC(d.RACE_GROUP); })
+   .attr("y", function(d) { return yScale_chart2_DC(d.DEATH_COUNT); })
+   .attr("width", xScale_chart2_DC.bandwidth())
+   .attr("height", function(d) { return height - yScale_chart2_DC(d.DEATH_COUNT); });
+
 
 });
 }
@@ -227,17 +445,30 @@ function drawChart3(){
 
 //set title of the chart #3
 document.getElementById("area_chart1_title").innerHTML = "Case count by Age"; 
+document.getElementById("area_chart2_title").innerHTML = "Hospitalized count by Age"; 
+document.getElementById("area_chart3_title").innerHTML = "Death count by Age"; 
 
 
-//add SVG for chart #3
+//add SVG for chart #3 - Case Count
 var svg_chart3 = d3.select("#area_chart1")
  .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom);
 
 
+//add SVG for chart #3 - Hospitalized Count
+var svg_chart3_HC = d3.select("#area_chart2")
+ .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom);
 
+//add SVG for chart #3 - Death Count
+var svg_chart3_DC = d3.select("#area_chart3")
+ .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom);
 
+// scales for Case Count
 //range = output for scales X and Y
 //padding to allow space between bars
 //scaleBand() in X because values are discrete
@@ -245,10 +476,39 @@ var xScale_chart3 = d3.scaleBand().range([0,width]).padding(0.4);
 var yScale_chart3 = d3.scaleLinear().range([height,0]);
 
 
+// scales for Hospitalized Count
+//range = output for scales X and Y
+//padding to allow space between bars
+//scaleBand() in X because values are discrete
+var xScale_chart3_HC = d3.scaleBand().range([0,width]).padding(0.4);
+var yScale_chart3_HC = d3.scaleLinear().range([height,0]);
+
+// scales for Death Count
+//range = output for scales X and Y
+//padding to allow space between bars
+//scaleBand() in X because values are discrete
+var xScale_chart3_DC = d3.scaleBand().range([0,width]).padding(0.4);
+var yScale_chart3_DC = d3.scaleLinear().range([height,0]);
+
+
+// Case Count
 //add HTML group to include the axes and bar chart
 var group_g_chart3 = svg_chart3
 		 .append("g")
 		 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// Hospitalized Count
+//add HTML group to include the axes and bar chart
+var group_g_HC = svg_chart3_HC
+		 .append("g")
+		 .attr("transform", "translate(" + margin.left + "," + margin.top + ")"); 
+
+// Death Count
+//add HTML group to include the axes and bar chart
+var group_g_DC = svg_chart3_DC
+		 .append("g")
+		 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
 
 
 //bring CSV data
@@ -256,7 +516,7 @@ var group_g_chart3 = svg_chart3
 const data_chart3 = d3.csv('https://raw.githubusercontent.com/joker2025/NY_Covid_2020/gh-pages/scene3_by_age_v2.csv',function(error,data){
 if(error) throw error;
 
-
+///////// CASE COUNT
 xScale_chart3.domain(data.map(function(d){ return d.AGE_GROUP;}));
 yScale_chart3.domain([0,d3.max(data,function(d){ return parseInt(d.CASE_COUNT);})]);
 
@@ -277,11 +537,201 @@ group_g_chart3.selectAll(".bar")
    .enter()
    .append("rect")
    .attr("class", "bar")
-   .attr("fill","#ffb366")
+   .attr("fill","#663300")
    .attr("x", function(d) { return xScale_chart3(d.AGE_GROUP); })
    .attr("y", function(d) { return yScale_chart3(d.CASE_COUNT); })
    .attr("width", xScale_chart3.bandwidth())
    .attr("height", function(d) { return height - yScale_chart3(d.CASE_COUNT); });
+
+
+///////// HOSPITALIZED COUNT
+//domain for X and Y
+xScale_chart3_HC.domain(data.map(function(d){ return d.AGE_GROUP;}));
+yScale_chart3_HC.domain([0,d3.max(data,function(d){ return parseInt(d.HOSPITALIZED_COUNT);})]);
+
+
+//add axis X to HTML group
+group_g_HC.append("g")
+ .attr("transform","translate(0," + height + ")")
+ .call(d3.axisBottom(xScale_chart3_HC));
+
+//add axis Y to HTML group
+group_g_HC.append("g")
+  .call(d3.axisLeft(yScale_chart3_HC).tickFormat(function(d){return d;})
+  .ticks(10));
+
+//draw bars
+group_g_HC.selectAll(".bar")
+   .data(data)
+   .enter()
+   .append("rect")
+   .attr("class", "bar")
+   .attr("fill","#808080")
+   .attr("x", function(d) { return xScale_chart3_HC(d.AGE_GROUP); })
+   .attr("y", function(d) { return yScale_chart3_HC(d.HOSPITALIZED_COUNT); })
+   .attr("width", xScale_chart3_HC.bandwidth())
+   .attr("height", function(d) { return height - yScale_chart3_HC(d.HOSPITALIZED_COUNT); });
+
+///////// DEATH COUNT
+//domain for X and Y
+xScale_chart3_DC.domain(data.map(function(d){ return d.AGE_GROUP;}));
+yScale_chart3_DC.domain([0,d3.max(data,function(d){ return parseInt(d.DEATH_COUNT);})]);
+
+
+//add axis X to HTML group
+group_g_DC.append("g")
+ .attr("transform","translate(0," + height + ")")
+ .call(d3.axisBottom(xScale_chart3_DC));
+
+//add axis Y to HTML group
+group_g_DC.append("g")
+  .call(d3.axisLeft(yScale_chart3_DC).tickFormat(function(d){return d;})
+  .ticks(10));
+
+//draw bars
+group_g_DC.selectAll(".bar")
+   .data(data)
+   .enter()
+   .append("rect")
+   .attr("class", "bar")
+   .attr("fill","#ff5050")
+   .attr("x", function(d) { return xScale_chart3_DC(d.AGE_GROUP); })
+   .attr("y", function(d) { return yScale_chart3_DC(d.DEATH_COUNT); })
+   .attr("width", xScale_chart3_DC.bandwidth())
+   .attr("height", function(d) { return height - yScale_chart3_DC(d.DEATH_COUNT); });
+
+//**********************
+//draw annotation 
+//**********************
+
+//CASE COUNT
+d3.select("#area_chart1")
+ .select("svg")
+ .append("circle")
+ .attr("cx",413)
+ .attr("cy",200)
+ .attr("r",25)
+ .attr("stroke","green")
+ .attr("stroke-dasharray","2")
+ .attr("fill","none");
+
+d3.select("#area_chart1")
+ .select("svg")
+ .append("circle")
+ .attr("cx",512)
+ .attr("cy",205)
+ .attr("r",25)
+ .attr("stroke","green")
+ .attr("stroke-dasharray","2")
+ .attr("fill","none");
+
+//add text
+d3.select("#area_chart1")
+ .select("svg")
+ .append("text")
+ .attr("x", 360)
+ .attr("y", 115)
+ .attr('stroke', 'black')
+ .style("font-size", 16)
+ .style("font-family","Consolas")
+ .style("letter-spacing",2)
+ .style("font-weight",2)
+ .text("Population with low");
+
+//add text
+d3.select("#area_chart1")
+ .select("svg")
+ .append("text")
+ .attr("x", 360)
+ .attr("y", 130)
+ .attr('stroke', 'black')
+ .style("font-size", 16)
+ .style("font-family","Consolas")
+ .style("letter-spacing",2)
+ .style("font-weight",2)
+ .text("number in cases but");
+
+//add text
+d3.select("#area_chart1")
+ .select("svg")
+ .append("text")
+ .attr("x", 360)
+ .attr("y", 145)
+ .attr('stroke', 'black')
+ .style("font-size", 16)
+ .style("font-family","Consolas")
+ .style("letter-spacing",2)
+ .style("font-weight",2)
+ .text("more fatalities");
+
+//add line
+d3.select("#area_chart1")
+ .select("svg")
+ .append("line")
+ .attr('x1', 413)
+ .attr('y1', 155)
+ .attr('x2', 413)
+ .attr('y2', 175)
+ .attr('stroke', 'green')
+
+d3.select("#area_chart1")
+ .select("svg")
+ .append("line")
+ .attr('x1', 512)
+ .attr('y1', 160)
+ .attr('x2', 512)
+ .attr('y2', 180)
+ .attr('stroke', 'green')
+
+
+//DEATH COUNT
+d3.select("#area_chart3")
+ .select("svg")
+ .append("circle")
+ .attr("cx",512)
+ .attr("cy",30)
+ .attr("r",25)
+ .attr("stroke","green")
+ .attr("stroke-dasharray","2")
+ .attr("fill","none");
+
+//add text
+d3.select("#area_chart3")
+ .select("svg")
+ .append("text")
+ .attr("x", 190)
+ .attr("y", 30)
+ .attr('stroke', 'black')
+ .style("font-size", 16)
+ .style("font-family","Consolas")
+ .style("letter-spacing",2)
+ .style("font-weight",2)
+// .text("Population most sensible");
+ .text("4th in cases count but");
+
+d3.select("#area_chart3")
+ .select("svg")
+ .append("text")
+ .attr("x", 190)
+ .attr("y", 45)
+ .attr('stroke', 'black')
+ .style("font-size", 16)
+ .style("font-family","Consolas")
+ .style("letter-spacing",2)
+ .style("font-weight",2)
+// .text("to Covid-19: 9250 deaths");
+ .text("1st in death count: 9250");
+
+//add line
+d3.select("#area_chart3")
+ .select("svg")
+ .append("line")
+ .attr('x1', 455)
+ .attr('y1', 27)
+ .attr('x2', 485)
+ .attr('y2', 27)
+ .attr('stroke', 'green')
+
 
 });
 }
@@ -289,22 +739,35 @@ group_g_chart3.selectAll(".bar")
 
 function drawChart4(){
 //***********************************************************
-// Chart #4 - by age
+// Chart #4 - by poverty
 //***********************************************************
 
 //set title of the chart #4
 document.getElementById("area_chart1_title").innerHTML = "Case count by Poverty"; 
+document.getElementById("area_chart2_title").innerHTML = "Hospitalized count by Poverty"; 
+document.getElementById("area_chart3_title").innerHTML = "Death count by Poverty"; 
 
 
-//add SVG for chart #3
+
+//add SVG for chart #3 - Case Count
 var svg_chart4 = d3.select("#area_chart1")
  .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom);
 
+//add SVG for chart #3 - Hospitalized Count
+var svg_chart4_HC = d3.select("#area_chart2")
+ .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom);
 
+//add SVG for chart #3 - Death Count
+var svg_chart4_DC = d3.select("#area_chart3")
+ .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom);
 
-
+// scales for Case Count
 //range = output for scales X and Y
 //padding to allow space between bars
 //scaleBand() in X because values are discrete
@@ -312,8 +775,36 @@ var xScale_chart4 = d3.scaleBand().range([0,width]).padding(0.4);
 var yScale_chart4 = d3.scaleLinear().range([height,0]);
 
 
+// scales for Hospitalized Count
+//range = output for scales X and Y
+//padding to allow space between bars
+//scaleBand() in X because values are discrete
+var xScale_chart4_HC = d3.scaleBand().range([0,width]).padding(0.4);
+var yScale_chart4_HC = d3.scaleLinear().range([height,0]);
+
+// scales for Death Count
+//range = output for scales X and Y
+//padding to allow space between bars
+//scaleBand() in X because values are discrete
+var xScale_chart4_DC = d3.scaleBand().range([0,width]).padding(0.4);
+var yScale_chart4_DC = d3.scaleLinear().range([height,0]);
+
+
+// Case Count
 //add HTML group to include the axes and bar chart
 var group_g_chart4 = svg_chart4
+		 .append("g")
+		 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// Hospitalized Count
+//add HTML group to include the axes and bar chart
+var group_g_HC = svg_chart4_HC
+		 .append("g")
+		 .attr("transform", "translate(" + margin.left + "," + margin.top + ")"); 
+
+// Death Count
+//add HTML group to include the axes and bar chart
+var group_g_DC = svg_chart4_DC
 		 .append("g")
 		 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -323,7 +814,7 @@ var group_g_chart4 = svg_chart4
 const data_chart4 = d3.csv('https://raw.githubusercontent.com/joker2025/NY_Covid_2020/gh-pages/scene3_by_poverty.csv',function(error,data){
 if(error) throw error;
 
-
+///////// CASE COUNT
 xScale_chart4.domain(data.map(function(d){ return d.POVERTY_GROUP;}));
 yScale_chart4.domain([0,d3.max(data,function(d){ return parseInt(d.CASE_COUNT);})]);
 
@@ -344,11 +835,69 @@ group_g_chart4.selectAll(".bar")
    .enter()
    .append("rect")
    .attr("class", "bar")
-   .attr("fill","#ff99ff")
+   .attr("fill","#663300")
    .attr("x", function(d) { return xScale_chart4(d.POVERTY_GROUP); })
    .attr("y", function(d) { return yScale_chart4(d.CASE_COUNT); })
    .attr("width", xScale_chart4.bandwidth())
    .attr("height", function(d) { return height - yScale_chart4(d.CASE_COUNT); });
+
+
+///////// HOSPITALIZED COUNT
+//domain for X and Y
+xScale_chart4_HC.domain(data.map(function(d){ return d.POVERTY_GROUP;}));
+yScale_chart4_HC.domain([0,d3.max(data,function(d){ return parseInt(d.HOSPITALIZED_COUNT);})]);
+
+
+//add axis X to HTML group
+group_g_HC.append("g")
+ .attr("transform","translate(0," + height + ")")
+ .call(d3.axisBottom(xScale_chart4_HC));
+
+//add axis Y to HTML group
+group_g_HC.append("g")
+  .call(d3.axisLeft(yScale_chart4_HC).tickFormat(function(d){return d;})
+  .ticks(10));
+
+//draw bars
+group_g_HC.selectAll(".bar")
+   .data(data)
+   .enter()
+   .append("rect")
+   .attr("class", "bar")
+   .attr("fill","#808080")
+   .attr("x", function(d) { return xScale_chart4_HC(d.POVERTY_GROUP); })
+   .attr("y", function(d) { return yScale_chart4_HC(d.HOSPITALIZED_COUNT); })
+   .attr("width", xScale_chart4_HC.bandwidth())
+   .attr("height", function(d) { return height - yScale_chart4_HC(d.HOSPITALIZED_COUNT); });
+
+
+///////// DEATH COUNT
+//domain for X and Y
+xScale_chart4_DC.domain(data.map(function(d){ return d.POVERTY_GROUP;}));
+yScale_chart4_DC.domain([0,d3.max(data,function(d){ return parseInt(d.DEATH_COUNT);})]);
+
+
+//add axis X to HTML group
+group_g_DC.append("g")
+ .attr("transform","translate(0," + height + ")")
+ .call(d3.axisBottom(xScale_chart4_DC));
+
+//add axis Y to HTML group
+group_g_DC.append("g")
+  .call(d3.axisLeft(yScale_chart4_DC).tickFormat(function(d){return d;})
+  .ticks(10));
+
+//draw bars
+group_g_DC.selectAll(".bar")
+   .data(data)
+   .enter()
+   .append("rect")
+   .attr("class", "bar")
+   .attr("fill","#ff5050")
+   .attr("x", function(d) { return xScale_chart4_DC(d.POVERTY_GROUP); })
+   .attr("y", function(d) { return yScale_chart4_DC(d.DEATH_COUNT); })
+   .attr("width", xScale_chart4_DC.bandwidth())
+   .attr("height", function(d) { return height - yScale_chart4_DC(d.DEATH_COUNT); });
 
 });
 }
