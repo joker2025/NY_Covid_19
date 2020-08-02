@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
 <html>
-
 <body>
-
-
-<table>
+<table >
  <tr>
   <td>
     <h1>
-	<div id="title_narrative">New York - Covid 2019</div>
-    </td>
+	<div id="title_narrative">New York - Covid 19</div>
    </h1>
+   </td>
+ </tr>
+  <tr>
+  <td>by Joseph Angulo - August 1,2020 </td>
+  </td>
  </tr>
  <tr>
     <td>
@@ -57,12 +58,18 @@
  </tr>
  <tr>
  <tr>
-  <td>
-   <div id="scene2_next_page">
+<td>
+
+	<button onclick="window.location.href='https://joker2025.github.io/NY_Covid_2020/index.html';">
+      Previous Page
+    </button>
+
+
+
 	<button onclick="window.location.href='https://joker2025.github.io/NY_Covid_2020/scene_3_web_page.html';">
       Next Page
     </button>
-   </div>
+  
    </td>
  </tr>
 </table>
@@ -309,6 +316,68 @@ group_g_chart4.selectAll(".bar")
    .attr("y", function(d) { return yScale_chart4(d.DEATH_RATE); })
    .attr("width", xScale_chart4.bandwidth())
    .attr("height", function(d) { return height - yScale_chart4(d.DEATH_RATE); });
+
+//**********************
+//draw annotation 
+//**********************
+
+//add circle
+d3.select("#area_chart4")
+ .select("svg")
+ .append("circle")
+ .attr("cx",512)
+ .attr("cy",110)
+ .attr("r",25)
+ .attr("stroke","green")
+ .attr("stroke-dasharray","2")
+ .attr("fill","none");
+
+//add text
+d3.select("#area_chart4")
+ .select("svg")
+ .append("text")
+ .attr("x", 450)
+ .attr("y", 30)
+ .attr('stroke', 'black')
+ .style("font-size", 16)
+ .style("font-family","Consolas")
+ .style("letter-spacing",1)
+ .style("font-weight",2)
+ .text("Less populated");
+
+d3.select("#area_chart4")
+ .select("svg")
+ .append("text")
+ .attr("x", 450)
+ .attr("y", 45)
+ .attr('stroke', 'black')
+ .style("font-size", 16)
+ .style("font-family","Consolas")
+ .style("letter-spacing",1)
+ .style("font-weight",2)
+ .text("borough but 4th in fatalities");
+
+d3.select("#area_chart4")
+ .select("svg")
+ .append("text")
+ .attr("x", 450)
+ .attr("y", 60)
+ .attr('stroke', 'black')
+ .style("font-size", 16)
+ .style("font-family","Consolas")
+ .style("letter-spacing",1)
+ .style("font-weight",2)
+ .text("in fatalities");
+
+//add line
+d3.select("#area_chart4")
+ .select("svg")
+ .append("line")
+ .attr('x1', 512)
+ .attr('y1', 64)
+ .attr('x2', 512)
+ .attr('y2', 86)
+ .attr('stroke', 'green')
 
 });
 
