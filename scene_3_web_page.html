@@ -58,7 +58,7 @@
   </br>
   </td>
  </tr>
- <tr>https://joker2025.github.io/NY_Covid_2020/index.html
+ <tr>
   <td>
 
 <button onclick="window.location.href='https://joker2025.github.io/NY_Covid_19/scene_2_web_page.html';">
@@ -207,10 +207,13 @@ group_g.selectAll(".bar")
    .append("rect")
    .attr("class", "bar")
    .attr("fill","#663300")
-   .attr("x", function(d) { return xScale_chart1(d.SEX_GROUP); })
-   .attr("y", function(d) { return yScale_chart1(d.CASE_COUNT); })
+   .attr("x", function(d) { return xScale_chart1(d.SEX_GROUP); })  
    .attr("width", xScale_chart1.bandwidth())
-   .attr("height", function(d) { return height - yScale_chart1(d.CASE_COUNT); });
+   .attr("height", 20)
+   .attr("y", 240)
+   .transition().duration(1500).delay(500)
+   .attr("height", function(d) { return height - yScale_chart1(d.CASE_COUNT); })
+   .attr("y", function(d) { return yScale_chart1(d.CASE_COUNT); });
 
 
 ///////// HOSPITALIZED COUNT
@@ -237,9 +240,12 @@ group_g_HC.selectAll(".bar")
    .attr("class", "bar")
    .attr("fill","#808080")
    .attr("x", function(d) { return xScale_chart1_HC(d.SEX_GROUP); })
-   .attr("y", function(d) { return yScale_chart1_HC(d.HOSPITALIZED_COUNT); })
+   .attr("height", 20)
+   .attr("y", 240)
+   .transition().duration(1500).delay(1000)
    .attr("width", xScale_chart1_HC.bandwidth())
-   .attr("height", function(d) { return height - yScale_chart1_HC(d.HOSPITALIZED_COUNT); });
+   .attr("height", function(d) { return height - yScale_chart1_HC(d.HOSPITALIZED_COUNT); })
+   .attr("y", function(d) { return yScale_chart1_HC(d.HOSPITALIZED_COUNT); });
 
 ///////// DEATH COUNT
 //domain for X and Y
@@ -265,9 +271,12 @@ group_g_DC.selectAll(".bar")
    .attr("class", "bar")
    .attr("fill","#ff5050")
    .attr("x", function(d) { return xScale_chart1_DC(d.SEX_GROUP); })
-   .attr("y", function(d) { return yScale_chart1_DC(d.DEATH_COUNT); })
+   .attr("height", 20)
+   .attr("y", 240)
+   .transition().duration(1500).delay(1500)
    .attr("width", xScale_chart1_DC.bandwidth())
-   .attr("height", function(d) { return height - yScale_chart1_DC(d.DEATH_COUNT); });
+   .attr("height", function(d) { return height - yScale_chart1_DC(d.DEATH_COUNT); })
+   .attr("y", function(d) { return yScale_chart1_DC(d.DEATH_COUNT); });
 
 });
 
@@ -373,9 +382,12 @@ group_g_chart2.selectAll(".bar")
    .attr("class", "bar")
    .attr("fill","#663300")
    .attr("x", function(d) { return xScale_chart2(d.RACE_GROUP); })
-   .attr("y", function(d) { return yScale_chart2(d.CASE_COUNT); })
    .attr("width", xScale_chart2.bandwidth())
-   .attr("height", function(d) { return height - yScale_chart2(d.CASE_COUNT); });
+   .attr("height", 20)
+   .attr("y", 240)
+   .transition().duration(1500).delay(500)
+   .attr("height", function(d) { return height - yScale_chart2(d.CASE_COUNT); })
+   .attr("y", function(d) { return yScale_chart2(d.CASE_COUNT); });
 
 
 ///////// HOSPITALIZED COUNT
@@ -402,9 +414,12 @@ group_g_HC.selectAll(".bar")
    .attr("class", "bar")
    .attr("fill","#808080")
    .attr("x", function(d) { return xScale_chart2_HC(d.RACE_GROUP); })
-   .attr("y", function(d) { return yScale_chart2_HC(d.HOSPITALIZED_COUNT); })
    .attr("width", xScale_chart2_HC.bandwidth())
-   .attr("height", function(d) { return height - yScale_chart2_HC(d.HOSPITALIZED_COUNT); });
+   .attr("height", 20)
+   .attr("y", 240)
+   .transition().duration(1500).delay(1000)
+   .attr("height", function(d) { return height - yScale_chart2_HC(d.HOSPITALIZED_COUNT); })
+   .attr("y", function(d) { return yScale_chart2_HC(d.HOSPITALIZED_COUNT); });
 
 ///////// DEATH COUNT
 //domain for X and Y
@@ -430,9 +445,12 @@ group_g_DC.selectAll(".bar")
    .attr("class", "bar")
    .attr("fill","#ff5050")
    .attr("x", function(d) { return xScale_chart2_DC(d.RACE_GROUP); })
-   .attr("y", function(d) { return yScale_chart2_DC(d.DEATH_COUNT); })
    .attr("width", xScale_chart2_DC.bandwidth())
-   .attr("height", function(d) { return height - yScale_chart2_DC(d.DEATH_COUNT); });
+   .attr("height", 20)
+   .attr("y", 240)
+   .transition().duration(1500).delay(1500)
+   .attr("height", function(d) { return height - yScale_chart2_DC(d.DEATH_COUNT); })
+   .attr("y", function(d) { return yScale_chart2_DC(d.DEATH_COUNT); });
 
 
 });
@@ -539,9 +557,12 @@ group_g_chart3.selectAll(".bar")
    .attr("class", "bar")
    .attr("fill","#663300")
    .attr("x", function(d) { return xScale_chart3(d.AGE_GROUP); })
-   .attr("y", function(d) { return yScale_chart3(d.CASE_COUNT); })
    .attr("width", xScale_chart3.bandwidth())
-   .attr("height", function(d) { return height - yScale_chart3(d.CASE_COUNT); });
+   .attr("height", 20)
+   .attr("y", 240)
+   .transition().duration(1500).delay(500)
+   .attr("height", function(d) { return height - yScale_chart3(d.CASE_COUNT); })
+   .attr("y", function(d) { return yScale_chart3(d.CASE_COUNT); });
 
 
 ///////// HOSPITALIZED COUNT
@@ -568,9 +589,12 @@ group_g_HC.selectAll(".bar")
    .attr("class", "bar")
    .attr("fill","#808080")
    .attr("x", function(d) { return xScale_chart3_HC(d.AGE_GROUP); })
-   .attr("y", function(d) { return yScale_chart3_HC(d.HOSPITALIZED_COUNT); })
    .attr("width", xScale_chart3_HC.bandwidth())
-   .attr("height", function(d) { return height - yScale_chart3_HC(d.HOSPITALIZED_COUNT); });
+   .attr("height", 20)
+   .attr("y", 240)
+   .transition().duration(1500).delay(1000)
+   .attr("height", function(d) { return height - yScale_chart3_HC(d.HOSPITALIZED_COUNT); })
+   .attr("y", function(d) { return yScale_chart3_HC(d.HOSPITALIZED_COUNT); });
 
 ///////// DEATH COUNT
 //domain for X and Y
@@ -596,9 +620,12 @@ group_g_DC.selectAll(".bar")
    .attr("class", "bar")
    .attr("fill","#ff5050")
    .attr("x", function(d) { return xScale_chart3_DC(d.AGE_GROUP); })
-   .attr("y", function(d) { return yScale_chart3_DC(d.DEATH_COUNT); })
    .attr("width", xScale_chart3_DC.bandwidth())
-   .attr("height", function(d) { return height - yScale_chart3_DC(d.DEATH_COUNT); });
+   .attr("height", 20)
+   .attr("y", 240)
+   .transition().duration(1500).delay(1500)
+   .attr("height", function(d) { return height - yScale_chart3_DC(d.DEATH_COUNT); })
+   .attr("y", function(d) { return yScale_chart3_DC(d.DEATH_COUNT); });
 
 //**********************
 //draw annotation 
@@ -837,9 +864,12 @@ group_g_chart4.selectAll(".bar")
    .attr("class", "bar")
    .attr("fill","#663300")
    .attr("x", function(d) { return xScale_chart4(d.POVERTY_GROUP); })
-   .attr("y", function(d) { return yScale_chart4(d.CASE_COUNT); })
    .attr("width", xScale_chart4.bandwidth())
-   .attr("height", function(d) { return height - yScale_chart4(d.CASE_COUNT); });
+   .attr("height", 20)
+   .attr("y", 240)
+   .transition().duration(1500).delay(500)
+   .attr("height", function(d) { return height - yScale_chart4(d.CASE_COUNT); })
+   .attr("y", function(d) { return yScale_chart4(d.CASE_COUNT); });
 
 
 ///////// HOSPITALIZED COUNT
@@ -866,9 +896,12 @@ group_g_HC.selectAll(".bar")
    .attr("class", "bar")
    .attr("fill","#808080")
    .attr("x", function(d) { return xScale_chart4_HC(d.POVERTY_GROUP); })
-   .attr("y", function(d) { return yScale_chart4_HC(d.HOSPITALIZED_COUNT); })
    .attr("width", xScale_chart4_HC.bandwidth())
-   .attr("height", function(d) { return height - yScale_chart4_HC(d.HOSPITALIZED_COUNT); });
+   .attr("height", 20)
+   .attr("y", 240)
+   .transition().duration(1500).delay(1000)
+   .attr("height", function(d) { return height - yScale_chart4_HC(d.HOSPITALIZED_COUNT); })
+   .attr("y", function(d) { return yScale_chart4_HC(d.HOSPITALIZED_COUNT); })
 
 
 ///////// DEATH COUNT
@@ -895,9 +928,12 @@ group_g_DC.selectAll(".bar")
    .attr("class", "bar")
    .attr("fill","#ff5050")
    .attr("x", function(d) { return xScale_chart4_DC(d.POVERTY_GROUP); })
-   .attr("y", function(d) { return yScale_chart4_DC(d.DEATH_COUNT); })
    .attr("width", xScale_chart4_DC.bandwidth())
-   .attr("height", function(d) { return height - yScale_chart4_DC(d.DEATH_COUNT); });
+   .attr("height", 20)
+   .attr("y", 240)
+   .transition().duration(1500).delay(1500)
+   .attr("height", function(d) { return height - yScale_chart4_DC(d.DEATH_COUNT); })
+   .attr("y", function(d) { return yScale_chart4_DC(d.DEATH_COUNT); });
 
 });
 }
