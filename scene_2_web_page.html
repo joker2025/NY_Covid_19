@@ -60,13 +60,13 @@
  <tr>
 <td>
 
-	<button onclick="window.location.href='https://joker2025.github.io/NY_Covid_19/index.html';">
+	<button onclick="window.location.href='https://joker2025.github.io/NY_Covid_2020/index.html';">
       Previous Page
     </button>
 
 
 
-	<button onclick="window.location.href='https://joker2025.github.io/NY_Covid_19/scene_3_web_page.html';">
+	<button onclick="window.location.href='https://joker2025.github.io/NY_Covid_2020/scene_3_web_page.html';">
       Next Page
     </button>
   
@@ -134,9 +134,12 @@ group_g.selectAll(".bar")
    .attr("class", "bar")
    .attr("fill","#808080")
    .attr("x", function(d) { return xScale_chart1(d.BOROUGH_GROUP); })
-   .attr("y", function(d) { return yScale_chart1(d.HOSPITALIZED_COUNT); })
    .attr("width", xScale_chart1.bandwidth())
-   .attr("height", function(d) { return height - yScale_chart1(d.HOSPITALIZED_COUNT); });
+   .attr("height", 20)
+   .attr("y", 240)
+   .transition().duration(1500).delay(500)
+   .attr("height", function(d) { return height - yScale_chart1(d.HOSPITALIZED_COUNT); })
+   .attr("y", function(d) { return yScale_chart1(d.HOSPITALIZED_COUNT); });
 
 });
 
@@ -194,9 +197,12 @@ group_g_chart2.selectAll(".bar")
    .attr("class", "bar")
    .attr("fill","#bfbfbf")
    .attr("x", function(d) { return xScale_chart2(d.BOROUGH_GROUP); })
-   .attr("y", function(d) { return yScale_chart2(d.HOSPITALIZED_RATE); })
    .attr("width", xScale_chart2.bandwidth())
-   .attr("height", function(d) { return height - yScale_chart2(d.HOSPITALIZED_RATE); });
+   .attr("height", 20)
+   .attr("y", 240)
+   .transition().duration(1500).delay(500)
+   .attr("height", function(d) { return height - yScale_chart2(d.HOSPITALIZED_RATE); })
+   .attr("y", function(d) { return yScale_chart2(d.HOSPITALIZED_RATE); });
 
 });
 
@@ -253,9 +259,12 @@ group_g_chart3.selectAll(".bar")
    .attr("class", "bar")
    .attr("fill","#663300")
    .attr("x", function(d) { return xScale_chart3(d.BOROUGH_GROUP); })
-   .attr("y", function(d) { return yScale_chart3(d.CASE_RATE); })
    .attr("width", xScale_chart3.bandwidth())
-   .attr("height", function(d) { return height - yScale_chart3(d.CASE_RATE); });
+   .attr("height", 20)
+   .attr("y", 240)
+   .transition().duration(1500).delay(500)
+   .attr("height", function(d) { return height - yScale_chart3(d.CASE_RATE); })
+   .attr("y", function(d) { return yScale_chart3(d.CASE_RATE); });
 
 });
 
@@ -313,9 +322,12 @@ group_g_chart4.selectAll(".bar")
    .attr("class", "bar")
    .attr("fill","#ff5050")
    .attr("x", function(d) { return xScale_chart4(d.BOROUGH_GROUP); })
-   .attr("y", function(d) { return yScale_chart4(d.DEATH_RATE); })
+   .attr("height", 20)
+   .attr("y", 240)
+   .transition().duration(1500).delay(500)
    .attr("width", xScale_chart4.bandwidth())
-   .attr("height", function(d) { return height - yScale_chart4(d.DEATH_RATE); });
+   .attr("height", function(d) { return height - yScale_chart4(d.DEATH_RATE); })
+   .attr("y", function(d) { return yScale_chart4(d.DEATH_RATE); });
 
 //**********************
 //draw annotation 
